@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="DocMind — Enterprise RAG-powered PDF intelligence. Chat with your documents using FAISS vector search and Groq LLaMA AI.">
+    <meta name="theme-color" content="#060d1a">
+    <title>{% block title %}DocMind — Enterprise AI PDF Intelligence{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <!-- Animated Background Layers -->
+    <div class="bg-aurora" aria-hidden="true"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-noise" aria-hidden="true"></div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <div class="page-wrapper">
+      <!-- Navigation -->
+      <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="nav-inner">
+          <!-- Brand -->
+          <a class="navbar-brand" href="{{ url_for('index') }}" aria-label="DocMind Home">
+            <div class="brand-logo-mark">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" fill="url(#brand-g1)"/>
+                <path d="M2 17l10 5 10-5" stroke="url(#brand-g2)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M2 12l10 5 10-5" stroke="url(#brand-g2)" stroke-width="2" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="brand-g1" x1="2" y1="2" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#06b6d4"/>
+                    <stop offset="1" stop-color="#8b5cf6"/>
+                  </linearGradient>
+                  <linearGradient id="brand-g2" x1="2" y1="12" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#06b6d4" stop-opacity="0.7"/>
+                    <stop offset="1" stop-color="#8b5cf6" stop-opacity="0.7"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <span class="brand-name">Doc<span class="brand-accent">Mind</span></span>
+          </a>
+
+          <!-- System Status Pill -->
+          <div class="system-status" title="All AI systems operational">
+            <span class="status-dot status-dot--live"></span>
+            <span class="status-text">FAISS + Groq Online</span>
+          </div>
+
+          <!-- Nav Actions -->
+          <div class="nav-actions">
+            <ul class="navbar-nav" id="navbar-nav">
+              <li><a class="nav-link" href="{{ url_for('index') }}" id="nav-home">
+                <i class="fa-solid fa-house-chimney"></i> Home
+              </a></li>
+              <li><a class="nav-link nav-link--cta" href="{{ url_for('reader') }}" id="nav-reader">
+                <i class="fa-solid fa-bolt"></i> Open AI Reader
+              </a></li>
+            </ul>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <main role="main">
+        {% block content %}{% endblock %}
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer" role="contentinfo">
+        <div class="footer-inner">
+          <div class="footer-brand">
+            <span class="footer-logo">DocMind<span class="brand-accent">.</span></span>
+            <p>Enterprise RAG-Powered PDF Intelligence Platform</p>
+          </div>
+          <div class="footer-links-group">
+            <div class="footer-col">
+              <span class="footer-col-title">Platform</span>
+              <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('reader') }}">AI Reader</a></li>
+                <li><a href="{{ url_for('health') }}">API Health</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <span class="footer-col-title">Technology</span>
+              <ul>
+                <li><span>FAISS Vector DB</span></li>
+                <li><span>MiniLM Embeddings</span></li>
+                <li><span>Groq LLaMA 3.3</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 DocMind. All rights reserved. Built with Retrieval-Augmented Generation.</p>
+        </div>
+      </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

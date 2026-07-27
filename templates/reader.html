@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block title %}AI Reader — DocMind Enterprise{% endblock %}
+
+{% block content %}
+<div class="workspace">
+
+  <!-- ── WORKSPACE HEADER BAR ── -->
+  <div class="workspace-header fade-up">
+    <div class="workspace-header-left">
+      <div class="workspace-title">
+        <i class="fa-solid fa-brain-circuit"></i>
+        <h1>AI <span class="text-gradient-cyan">Workspace</span></h1>
+      </div>
+      <div class="doc-status-badge" id="doc-status-badge" {% if not is_ready %}data-state="idle"{% else %}data-state="ready"{% endif %}>
+        <span class="status-dot-sm" id="status-dot-sm"></span>
+        <span id="status-badge-text">{% if is_ready %}{{ document_name }} — Ready{% else %}No Document Loaded{% endif %}</span>
+      </div>
+    </div>
+    <div class="workspace-header-right">
+      <div class="model-pill">
+        <i class="fa-solid fa-microchip"></i>
+        LLaMA 3.3 70B
+      </div>
+      <button class="ws-btn" id="clear-chat-btn" title="Clear conversation">
+        <i class="fa-solid fa-broom"></i>
+        Clear Chat
+      </button>
+      <button class="ws-btn ws-btn--primary" id="export-chat-btn" title="Export conversation as Markdown">
+        <i class="fa-solid fa-file-arrow-down"></i>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- ── WORKSPACE BODY ── -->
+  <div class="workspace-body fade-up" style="--delay:0.1s">
+
+    <!-- LEFT PANEL: Upload & Controls -->
+    <aside class="ws-panel" id="ws-panel" aria-label="Document controls">
+
+      <!-- Upload Card -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>Upload Document</span>
+        </div>
+
+        <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload PDF file">
+          <input type="file" id="pdf-input" accept=".pdf,application/pdf" hidden aria-hidden="true">
+          <div class="upload-zone-inner">
+            <div class="upload-anim" id="upload-anim">
+              <div class="upload-ring"></div>
+              <i class="fa-solid fa-file-pdf upload-icon-main"></i>
+            </div>
+            <p class="upload-zone-title">Drop your PDF here</p>
+            <p class="upload-zone-hint">or click to browse &mdash; max 16 MB</p>
+            <div class="upload-badges">
+              <span class="format-badge"><i class="fa-solid fa-check"></i> PDF</span>
+            </div>
+            <button type="button" class="btn btn-outline-sm" id="browse-btn">
+              <i class="fa-solid fa-folder-open"></i> Choose File
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload Status -->
+        <div class="upload-status" id="upload-status" hidden>
+          <div class="status-bar" id="status-spinner" hidden>
+            <div class="status-bar-fill"></div>
+          </div>
+          <p id="status-message"></p>
+        </div>
+
+        <!-- Doc Info -->
+        <div class="doc-info-card" id="doc-info" {% if not is_ready %}hidden{% endif %}>
+          <div class="doc-info-header">
+            <i class="fa-solid fa-circle-check doc-info-icon"></i>
+            <span class="doc-info-title">Document Indexed</span>
+          </div>
+          <ul class="doc-meta-list">
+            <li>
+              <span class="meta-key"><i class="fa-solid fa-file"></i> File</span>
+              <span class="meta-val" id="doc-name">{{ document_name or '—' }}</span>
+            </li>
+            <li>
+              <span class="meta-key"><i class="fa-solid fa-book-open"></i> Pages</span>
+              <span class="meta-val"><strong id="doc-pages">{{ page_count or 0 }}</strong></span>
+            </li>
+            <li>
+              <span class="meta-key"><i class="fa-solid fa-puzzle-piece"></i> Chunks</span>
+              <span class="meta-val"><strong id="doc-chunks">{{ chunk_count or 0 }}</strong></span>
+            </li>
+            <li>
+              <span class="meta-key"><i class="fa-solid fa-database"></i> Index</span>
+              <span class="meta-val meta-val--green">FAISS Ready</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Smart Prompts Card -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>Smart Prompts</span>
+        </div>
+        <div class="prompt-categories">
+          <div class="prompt-category">
+            <span class="prompt-cat-label">Executive</span>
+            <button type="button" class="tip-btn" data-question="Provide an executive summary of this document in 5 bullet points.">
+              <i class="fa-solid fa-chart-bar"></i> Executive Summary
+            </button>
+            <button type="button" class="tip-btn" data-question="What are the key findings and main conclusions of this document?">
+              <i class="fa-solid fa-magnifying-glass-chart"></i> Key Findings
+            </button>
+          </div>
+          <div class="prompt-category">
+            <span class="prompt-cat-label">Analysis</span>
+            <button type="button" class="tip-btn" data-question="List all actionable items, recommendations, or next steps mentioned.">
+              <i class="fa-solid fa-list-check"></i> Action Items
+            </button>
+            <button type="button" class="tip-btn" data-question="What technologies, tools, or technical concepts are described?">
+              <i class="fa-solid fa-microchip"></i> Technical Details
+            </button>
+          </div>
+          <div class="prompt-category">
+            <span class="prompt-cat-label">Extraction</span>
+            <button type="button" class="tip-btn" data-question="Extract all names, organizations, dates, and locations mentioned.">
+              <i class="fa-solid fa-tags"></i> Named Entities
+            </button>
+            <button type="button" class="tip-btn" data-question="What risks, challenges, or limitations are identified in this document?">
+              <i class="fa-solid fa-triangle-exclamation"></i> Risks &amp; Challenges
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- MAIN CHAT CONSOLE -->
+    <section class="chat-console" aria-label="AI Chat Console">
+      <div class="chat-card">
+        <!-- Chat Header -->
+        <div class="chat-card-header">
+          <div class="chat-card-title">
+            <span class="chat-model-indicator"></span>
+            AI Assistant
+          </div>
+          <div class="chat-card-meta" id="chat-msg-count">0 messages</div>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Conversation">
+          <div class="message message--bot" id="welcome-msg">
+            <div class="message-avatar message-avatar--bot">
+              <i class="fa-solid fa-brain-circuit"></i>
+            </div>
+            <div class="message-body">
+              <div class="message-header">
+                <span class="msg-sender">DocMind AI</span>
+                <span class="msg-time">Just now</span>
+              </div>
+              <div class="message-content">
+                <p>👋 Welcome to <strong>DocMind Enterprise</strong>. Upload a PDF document on the left panel to get started.</p>
+                <p>I'll analyze the full document and answer your questions with grounded, citation-backed responses using FAISS retrieval and Groq LLaMA 3.3 70B.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Form -->
+        <form class="chat-input-form" id="chat-form" aria-label="Send a question">
+          <div class="input-wrapper">
+            <textarea
+              id="question-input"
+              class="chat-input"
+              rows="1"
+              placeholder="Ask anything about your document…"
+              aria-label="Your question"
+              {% if not is_ready %}disabled{% endif %}
+            ></textarea>
+            <div class="input-toolbar">
+              <span class="input-hint">
+                <kbd>Enter</kbd> send &nbsp;·&nbsp; <kbd>Shift+Enter</kbd> newline
+              </span>
+              <span class="char-counter" id="char-counter">0</span>
+            </div>
+          </div>
+          <button type="submit" class="send-btn" id="send-btn" {% if not is_ready %}disabled{% endif %} aria-label="Send message">
+            <i class="fa-solid fa-paper-plane-top"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </div><!-- /workspace-body -->
+</div><!-- /workspace -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.DOC_READY = {{ 'true' if is_ready else 'false' }};
+</script>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

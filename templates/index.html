@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% block title %}DocMind — Enterprise AI PDF Intelligence Platform{% endblock %}
+
+{% block content %}
+<div class="landing-page">
+
+  <!-- ── HERO SECTION ── -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+
+        <!-- Animated Badge -->
+        <div class="hero-badge fade-up" style="--delay: 0s">
+          <span class="badge-icon">
+            <i class="fa-solid fa-microchip-ai"></i>
+          </span>
+          <span>Retrieval-Augmented Generation &middot; v2.0</span>
+          <span class="badge-live">
+            <span class="live-dot"></span>
+            LIVE
+          </span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-headline fade-up" style="--delay: 0.1s">
+          Your Documents.<br>
+          <span class="text-gradient-cyan">Understood by AI.</span>
+        </h1>
+
+        <!-- Sub-headline -->
+        <p class="hero-sub fade-up" style="--delay: 0.2s">
+          Upload any PDF and instantly unlock enterprise-grade semantic intelligence.
+          Ask complex questions, extract insights, and verify every answer with
+          source citations — powered by FAISS vector search and Groq LLaMA 3.3 70B.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="hero-ctas fade-up" style="--delay: 0.3s">
+          <a class="btn btn-primary btn-glow" href="{{ url_for('reader') }}" id="hero-cta-reader">
+            <i class="fa-solid fa-bolt"></i>
+            Start AI Chat
+          </a>
+          <a class="btn btn-ghost" href="#how-it-works" id="hero-cta-learn">
+            <i class="fa-solid fa-arrow-down"></i>
+            How It Works
+          </a>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="hero-trust fade-up" style="--delay: 0.4s">
+          <span><i class="fa-solid fa-shield-check"></i> No data stored externally</span>
+          <span><i class="fa-solid fa-lock"></i> Session-isolated processing</span>
+          <span><i class="fa-solid fa-bolt"></i> &lt;2s average response</span>
+        </div>
+      </div>
+
+      <!-- Hero Visual — Architecture Preview -->
+      <div class="hero-visual fade-up" style="--delay: 0.2s" aria-hidden="true">
+        <div class="arch-preview">
+          <div class="arch-preview-header">
+            <div class="arch-dot arch-dot--red"></div>
+            <div class="arch-dot arch-dot--yellow"></div>
+            <div class="arch-dot arch-dot--green"></div>
+            <span class="arch-title">DocMind AI Pipeline</span>
+          </div>
+          <div class="arch-body">
+            <div class="arch-node arch-node--active">
+              <i class="fa-solid fa-file-pdf"></i>
+              <span>PDF Upload</span>
+            </div>
+            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="arch-node">
+              <i class="fa-solid fa-scissors"></i>
+              <span>Chunking</span>
+            </div>
+            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="arch-node">
+              <i class="fa-solid fa-vector-square"></i>
+              <span>MiniLM Embed</span>
+            </div>
+            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="arch-node">
+              <i class="fa-solid fa-database"></i>
+              <span>FAISS Index</span>
+            </div>
+            <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="arch-node arch-node--glow">
+              <i class="fa-solid fa-brain-circuit"></i>
+              <span>LLaMA 3.3</span>
+            </div>
+          </div>
+          <div class="arch-output">
+            <div class="arch-output-label">Latest Response</div>
+            <div class="arch-output-text">
+              <span class="arch-cursor">Based on the document, the key findings indicate…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── METRICS STRIP ── -->
+  <section class="metrics-strip">
+    <div class="container">
+      <div class="metrics-grid">
+        <div class="metric-card fade-up">
+          <div class="metric-icon"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="metric-value" data-target="10000">0</div>
+          <div class="metric-unit">+ Chunks/Doc</div>
+          <div class="metric-label">Max Processing Scale</div>
+        </div>
+        <div class="metric-card fade-up">
+          <div class="metric-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+          <div class="metric-value">&lt;200</div>
+          <div class="metric-unit">ms Retrieval</div>
+          <div class="metric-label">FAISS Vector Search Speed</div>
+        </div>
+        <div class="metric-card fade-up">
+          <div class="metric-icon"><i class="fa-solid fa-brain"></i></div>
+          <div class="metric-value">70B</div>
+          <div class="metric-unit">Parameters</div>
+          <div class="metric-label">Groq LLaMA Model Size</div>
+        </div>
+        <div class="metric-card fade-up">
+          <div class="metric-icon"><i class="fa-solid fa-percent"></i></div>
+          <div class="metric-value">100</div>
+          <div class="metric-unit">% Grounded</div>
+          <div class="metric-label">Answers Cite Source Context</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="hiw-section" id="how-it-works">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-badge"><i class="fa-solid fa-diagram-project"></i> Architecture</div>
+        <h2>How <span class="text-gradient-cyan">DocMind</span> Works</h2>
+        <p>A transparent, enterprise-grade RAG pipeline — every step designed for accuracy and speed.</p>
+      </div>
+
+      <div class="pipeline-steps">
+        <div class="pipeline-step fade-up">
+          <div class="step-number">01</div>
+          <div class="step-card">
+            <div class="step-icon step-icon--cyan"><i class="fa-solid fa-file-arrow-up"></i></div>
+            <h3>Upload &amp; Parse</h3>
+            <p>Drop any PDF up to 16 MB. The engine uses PyMuPDF for high-fidelity text extraction preserving document structure.</p>
+            <div class="step-tech">PyMuPDF · Flask</div>
+          </div>
+        </div>
+        <div class="pipeline-connector" aria-hidden="true">
+          <i class="fa-solid fa-chevrons-right"></i>
+        </div>
+
+        <div class="pipeline-step fade-up">
+          <div class="step-number">02</div>
+          <div class="step-card">
+            <div class="step-icon step-icon--violet"><i class="fa-solid fa-scissors"></i></div>
+            <h3>Semantic Chunking</h3>
+            <p>Text is split into overlapping chunks with intelligent boundary detection to preserve context across passages.</p>
+            <div class="step-tech">LangChain · RecursiveTextSplitter</div>
+          </div>
+        </div>
+        <div class="pipeline-connector" aria-hidden="true">
+          <i class="fa-solid fa-chevrons-right"></i>
+        </div>
+
+        <div class="pipeline-step fade-up">
+          <div class="step-number">03</div>
+          <div class="step-card">
+            <div class="step-icon step-icon--emerald"><i class="fa-solid fa-vector-square"></i></div>
+            <h3>Dense Embeddings</h3>
+            <p>Each chunk is encoded into a 384-dimensional dense vector using the <code>all-MiniLM-L6-v2</code> sentence transformer.</p>
+            <div class="step-tech">SentenceTransformers · MiniLM-L6</div>
+          </div>
+        </div>
+        <div class="pipeline-connector" aria-hidden="true">
+          <i class="fa-solid fa-chevrons-right"></i>
+        </div>
+
+        <div class="pipeline-step fade-up">
+          <div class="step-number">04</div>
+          <div class="step-card">
+            <div class="step-icon step-icon--amber"><i class="fa-solid fa-database"></i></div>
+            <h3>FAISS Retrieval</h3>
+            <p>Your query is embedded and matched against stored vectors using cosine similarity search, returning top-K most relevant passages.</p>
+            <div class="step-tech">FAISS · Inner Product Search</div>
+          </div>
+        </div>
+        <div class="pipeline-connector" aria-hidden="true">
+          <i class="fa-solid fa-chevrons-right"></i>
+        </div>
+
+        <div class="pipeline-step fade-up">
+          <div class="step-number">05</div>
+          <div class="step-card step-card--glow">
+            <div class="step-icon step-icon--cyan"><i class="fa-solid fa-brain-circuit"></i></div>
+            <h3>Grounded Generation</h3>
+            <p>Retrieved passages are injected as context into a structured prompt. LLaMA 3.3 70B generates factual, cited answers strictly from document content.</p>
+            <div class="step-tech">Groq API · LLaMA 3.3 70B</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES GRID ── -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-badge"><i class="fa-solid fa-stars"></i> Capabilities</div>
+        <h2>Enterprise-Grade <span class="text-gradient-cyan">Features</span></h2>
+        <p>Built for professionals who need precision, speed, and full transparency.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <div class="feature-icon-wrap feature-icon-wrap--cyan">
+            <i class="fa-solid fa-quote-left"></i>
+          </div>
+          <h3>Source Citations</h3>
+          <p>Every answer includes expandable source cards with exact page references and matched snippet context for full auditability.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon-wrap feature-icon-wrap--violet">
+            <i class="fa-solid fa-markdown"></i>
+          </div>
+          <h3>Rich Markdown Output</h3>
+          <p>Responses render with full Markdown — headers, bullet lists, bold/italic, tables, and syntax-highlighted code blocks.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon-wrap feature-icon-wrap--emerald">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3>Session Isolation</h3>
+          <p>Each upload session runs in a private, isolated context. No data persists between users — enterprise-safe by design.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon-wrap feature-icon-wrap--amber">
+            <i class="fa-solid fa-gauge-max"></i>
+          </div>
+          <h3>Sub-Second Retrieval</h3>
+          <p>FAISS flat index delivers exact nearest-neighbor search in under 200ms, even on large documents with thousands of chunks.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon-wrap feature-icon-wrap--cyan">
+            <i class="fa-solid fa-file-export"></i>
+          </div>
+          <h3>Export Conversations</h3>
+          <p>Download your full Q&amp;A session as a structured Markdown file — perfect for reports, documentation, and sharing insights.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon-wrap feature-icon-wrap--violet">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <h3>Smart Prompt Library</h3>
+          <p>Curated enterprise prompts for executive summaries, technical analysis, action item extraction, and key findings.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA SECTION ── -->
+  <section class="cta-section fade-up">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-glow" aria-hidden="true"></div>
+        <div class="cta-content">
+          <h2>Ready to interrogate your documents?</h2>
+          <p>Upload a research paper, legal contract, financial report, or technical manual and start asking questions instantly.</p>
+          <a class="btn btn-primary btn-glow btn-lg" href="{{ url_for('reader') }}" id="cta-section-btn">
+            <i class="fa-solid fa-rocket"></i>
+            Launch AI Reader
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
