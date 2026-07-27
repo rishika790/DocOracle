@@ -1,5 +1,5 @@
-uploads/
-faiss_index/
-__pycache__/
-*.pyc
 .env
+__pycache__/
+faiss_index/
+uploads/
+*.pyc
