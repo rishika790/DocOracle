@@ -1,60 +1,31 @@
-﻿# 📄 DocOracle — AI-Powered PDF Question Answering
+# 🔮 DocOracle
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python" />
-  <img src="https://img.shields.io/badge/Flask-3.0%2B-black?style=for-the-badge&logo=flask" />
-  <img src="https://img.shields.io/badge/LangChain-0.3%2B-green?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Groq-LLaMA%203.3-orange?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/FAISS-Vector%20Store-purple?style=for-the-badge" />
-</p>
-
-> **DocOracle** is a web application that lets you upload any PDF and ask questions about it in natural language. It uses a **Retrieval-Augmented Generation (RAG)** pipeline powered by Groq's blazing-fast LLaMA 3.3 model, HuggingFace embeddings, and a FAISS vector store — all wrapped in a clean Flask web UI.
+> **Chat with your PDF documents using AI** — Upload any PDF and ask questions in natural language. DocOracle uses RAG (Retrieval-Augmented Generation) to give you accurate, context-grounded answers.
 
 ---
 
 ## ✨ Features
 
-- 📤 **PDF Upload** — Upload any PDF (up to 16 MB)
-- 🔍 **Semantic Search** — Finds the most relevant chunks from your document using vector similarity
-- 🤖 **AI Answers** — Powered by Groq's `llama-3.3-70b-versatile` for fast, accurate responses
-- 📌 **Source Citations** — Answers come with page numbers and text snippets for verification
-- 🔐 **Session Isolation** — Each user gets their own isolated RAG engine instance
-- ⚡ **Lazy Loading** — Embeddings and LLM are initialized only when needed
+- 📄 **PDF Upload** — Upload any PDF document (up to 16 MB)
+- 🤖 **AI-Powered Q&A** — Ask questions and get answers from your document
+- 🔍 **Source Citations** — Every answer includes page references and snippets
+- ⚡ **Fast Embeddings** — Uses HuggingFace `all-MiniLM-L6-v2` for local vector search
+- 🧠 **Powered by Llama 3.3** — Uses `llama-3.3-70b-versatile` via Groq API
+- 🗃️ **FAISS Vector Store** — Efficient similarity search for relevant document chunks
+- 🌐 **Clean Web UI** — Simple Flask-based interface
 
 ---
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
-|-------|------------|
-| **Web Framework** | Flask 3.0+ |
-| **LLM** | Groq API — `llama-3.3-70b-versatile` |
-| **Embeddings** | HuggingFace — `sentence-transformers/all-MiniLM-L6-v2` |
-| **Vector Store** | FAISS (CPU) |
-| **PDF Parsing** | PyPDF via LangChain Community |
-| **RAG Framework** | LangChain (Classic + Core + Community) |
-| **Environment** | python-dotenv |
-
----
-
-## 📁 Project Structure
-
-```
-DocOracle/
-├── app.py              # Flask application & API routes
-├── rag_engine.py       # RAGEngine class — core PDF processing & QA logic
-├── requirements.txt    # Python dependencies
-├── .env                # Environment variables (API keys) — not committed
-├── .gitignore          # Git ignore rules
-├── templates/
-│   ├── base.html       # Base HTML template
-│   ├── index.html      # Home / Upload page
-│   └── reader.html     # PDF Reader & Q&A interface
-├── static/             # CSS, JS, and other static assets
-├── uploads/            # Uploaded PDF files (auto-created)
-├── faiss_index/        # FAISS vector index storage
-└── Data/               # Additional data files
-```
+|-------|-----------|
+| Backend | Python, Flask |
+| LLM | Llama 3.3 70B (via Groq) |
+| Embeddings | HuggingFace `all-MiniLM-L6-v2` |
+| Vector Store | FAISS |
+| RAG Framework | LangChain |
+| PDF Parsing | PyPDF |
 
 ---
 
@@ -62,52 +33,88 @@ DocOracle/
 
 ### Prerequisites
 
-- Python **3.10** or higher
-- A **Groq API Key** (free at [console.groq.com](https://console.groq.com))
+- Python 3.10+
+- A free [Groq API Key](https://console.groq.com/)
 
-### 1. Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/DocOracle.git
+git clone https://github.com/rishika790/DocOracle.git
 cd DocOracle
 ```
 
-### 2. Create a Virtual Environment
+### 2. Create a virtual environment
 
 ```bash
 python -m venv venv
 
-# Windows
+# On Windows
 venv\Scripts\activate
 
-# macOS / Linux
+# On macOS/Linux
 source venv/bin/activate
 ```
 
-### 3. Install Dependencies
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure Environment Variables
+### 4. Set up environment variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the root directory:
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
-SECRET_KEY=your_flask_secret_key_here   # optional, has a default
+SECRET_KEY=your_secret_key_here
 ```
 
-> 💡 Get your free Groq API key from [console.groq.com](https://console.groq.com)
+> 💡 Get your free Groq API key at [console.groq.com](https://console.groq.com/)
 
-### 5. Run the Application
+### 5. Run the application
 
 ```bash
 python app.py
 ```
 
-Open your browser and navigate to **[http://localhost:5000](http://localhost:5000)**
+Open your browser and go to: **http://localhost:5000**
+
+---
+
+## 📖 How It Works
+
+```
+PDF Upload → Text Extraction → Chunking → Embeddings → FAISS Index
+                                                              ↓
+User Question → Query Embedding → Similarity Search → Top-K Chunks
+                                                              ↓
+                                              LLM (Llama 3.3) → Answer + Sources
+```
+
+1. **Upload** a PDF — it gets split into overlapping chunks (1000 chars, 200 overlap)
+2. Each chunk is **embedded** using a local HuggingFace model
+3. Embeddings are stored in a **FAISS** vector index
+4. When you ask a question, the top 3 most relevant chunks are **retrieved**
+5. The **LLM** generates an answer grounded only in those chunks
+
+---
+
+## 📁 Project Structure
+
+```
+DocOracle/
+├── app.py              # Flask app & API routes
+├── rag_engine.py       # RAG pipeline (load, embed, query)
+├── requirements.txt    # Python dependencies
+├── .env                # Environment variables (not committed)
+├── templates/          # HTML templates
+│   ├── index.html
+│   └── reader.html
+├── static/             # CSS, JS, assets
+├── uploads/            # Uploaded PDFs (temporary)
+└── Data/               # Sample data
+```
 
 ---
 
@@ -115,107 +122,35 @@ Open your browser and navigate to **[http://localhost:5000](http://localhost:500
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/` | Home page — PDF upload interface |
-| `GET` | `/reader` | PDF reader & Q&A page |
-| `POST` | `/upload` | Upload and process a PDF file |
-| `POST` | `/ask` | Ask a question about the loaded PDF |
-| `GET` | `/health` | Health check endpoint |
-
-### `POST /upload`
-
-**Request**: `multipart/form-data` with field `pdf` (PDF file)
-
-**Response (success)**:
-```json
-{
-  "success": true,
-  "filename": "document.pdf",
-  "pages": 42,
-  "chunks": 130
-}
-```
-
-### `POST /ask`
-
-**Request**:
-```json
-{ "question": "What is the main topic of this document?" }
-```
-
-**Response (success)**:
-```json
-{
-  "success": true,
-  "answer": "The document discusses...",
-  "sources": [
-    { "page": "3", "snippet": "Relevant text snippet from page 3..." }
-  ]
-}
-```
+| `GET` | `/` | Home page |
+| `GET` | `/reader` | PDF reader & chat interface |
+| `POST` | `/upload` | Upload a PDF file |
+| `POST` | `/ask` | Ask a question about the PDF |
+| `GET` | `/health` | Health check |
 
 ---
 
-## ⚙️ Configuration
+## ⚠️ Notes
 
-You can tweak the following constants in `rag_engine.py`:
-
-| Constant | Default | Description |
-|----------|---------|-------------|
-| `EMBEDDING_MODEL` | `all-MiniLM-L6-v2` | HuggingFace embedding model |
-| `LLM_MODEL` | `llama-3.3-70b-versatile` | Groq LLM model |
-| `CHUNK_SIZE` | `1000` | Characters per text chunk |
-| `CHUNK_OVERLAP` | `200` | Overlap between consecutive chunks |
-| `RETRIEVAL_K` | `3` | Number of chunks retrieved per query |
-
-File upload limit can be changed in `app.py`:
-
-```python
-MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB
-```
+- The `.env` file is **not committed** to git for security
+- Each browser session gets its own isolated RAG engine
+- Only **PDF** files are supported (max 16 MB)
+- Answers are strictly grounded in the document — the LLM won't hallucinate outside context
 
 ---
 
-## 🧠 How It Works
+## 🤝 Contributing
 
-```
-PDF Upload
-    │
-    ▼
-PyPDFLoader ──► Extract text from all pages
-    │
-    ▼
-RecursiveCharacterTextSplitter ──► Split into overlapping chunks
-    │
-    ▼
-HuggingFaceEmbeddings ──► Convert chunks to vector embeddings
-    │
-    ▼
-FAISS VectorStore ──► Store & index embeddings
-    │
-    ▼
-User asks a question
-    │
-    ▼
-FAISS Retriever ──► Find top-K most relevant chunks
-    │
-    ▼
-ChatGroq (LLaMA 3.3) ──► Generate answer from context
-    │
-    ▼
-Response with answer + source page citations
-```
+Pull requests are welcome! For major changes, please open an issue first.
 
 ---
 
-## 🙌 Acknowledgements
-
-- [LangChain](https://www.langchain.com/) — RAG framework
-- [Groq](https://groq.com/) — Ultra-fast LLM inference
-- [FAISS](https://github.com/facebookresearch/faiss) — Vector similarity search by Meta
-- [HuggingFace Sentence Transformers](https://www.sbert.net/) — Text embeddings
-
----
-
-## 📝 License
+## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+  Made with ❤️ by <a href="https://github.com/rishika790">rishika790</a>
+</div>
